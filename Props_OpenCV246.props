@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <ExecutablePath>E:\Linhehe\CVLab\openCV\opencv\build\x86\vc10\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>E:\Linhehe\CVLab\OpenCVLibByHehe\include;E:\Linhehe\CVLab\openCV\opencv\build\include\opencv2;E:\Linhehe\CVLab\openCV\opencv\build\include\opencv;E:\Linhehe\CVLab\openCV\opencv\build\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\Linhehe\CVLab\openCV\opencv\build\x86\vc10\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>E:\Linhehe\CVLab\OpenCVLibByHehe\src;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link />
+    <Link>
+      <AdditionalDependencies>opencv_core246d.lib;opencv_highgui246d.lib;opencv_imgproc246d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>
