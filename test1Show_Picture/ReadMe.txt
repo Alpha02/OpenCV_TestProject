@@ -1,1 +1,1 @@
-OpenCV���ԣ���ʾһ��ͼƬ
+OpenCV显示一幅图片
