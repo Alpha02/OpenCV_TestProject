@@ -1,11 +1,9 @@
 // test3ReadCamera.cpp : 定义控制台应用程序的入口点。
 //
-
-#include "stdafx.h"
 #include "cv.h"
 #include "highgui.h"
  
-int _tmain(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 	CvCapture * capture;
 	capture=cvCreateCameraCapture(0);

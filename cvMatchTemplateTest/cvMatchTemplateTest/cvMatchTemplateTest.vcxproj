@@ -79,7 +79,6 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\OpenCVLibByHehe\src\hehecv.cpp" />
     <ClCompile Include="cvMatchTemplateTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -9,8 +9,6 @@ void on_trackbar(int){
 	if(g_storage==NULL){
 		img_gray=cvxCreateImageSimilar(img_old,1,8);
 		g_storage=cvCreateMemStorage();
-
-
 	}else{
 		cvClearMemStorage(g_storage);
 	}
@@ -22,7 +20,6 @@ void on_trackbar(int){
 	//AdaptiveThreshold(img_gray,img_gray,255);
 	//Canny±ßÔµ¼ì²â
 	cvCanny(img_gray,img_gray,50,g_thresh);
-
 
 	cvFindContours(img_gray,g_storage,&contours);
 
@@ -44,6 +41,7 @@ int main(int argc, char * argv[]){
 	on_trackbar(0);
 	while(1){
 		img=cvQueryFrame(capture);
+		//Ò»½×ÖÍºóÂË²¨
 		cvAddWeighted(img_old,0.4,img,0.6,0,img_old);
 
 		on_trackbar(0);

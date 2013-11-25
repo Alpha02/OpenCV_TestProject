@@ -6,8 +6,8 @@ int main(int argc, char * argv[])
 	char * win_list[]={"ImageCutter","reswin"};
 	cvxArrangeWindows(2,win_list,cvSize(1366,568));
 	while(1){
-	IplImage * src_img=cvLoadImage("E://Linhehe//CVLab//img//12.jpg");
-	IplImage * src_img2=cvLoadImage("E://Linhehe//CVLab//img//13.png");
+	IplImage * src_img=cvLoadImage("E://Linhehe//CVLab//img//6.jpg");
+	IplImage * src_img2=cvLoadImage("E://Linhehe//CVLab//img//7.jpg");
 	IplImage * sub_img=cvxCutImageByMouse(src_img,"ImageCutter");
 	IplImage * src_img2_resize=cvxGetSubImage(
 		src_img2,

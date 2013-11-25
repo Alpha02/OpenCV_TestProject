@@ -18,8 +18,5 @@
     <ClCompile Include="cvContourTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\OpenCVLibByHehe\src\hehecv.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
