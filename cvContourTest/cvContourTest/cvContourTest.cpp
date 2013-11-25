@@ -20,18 +20,23 @@ void on_trackbar(int){
 	cvFindContours(img_gray,g_storage,&contours);
 	cvZero(img_gray);
 	if(contours){
-		cvDrawContours(img_gray,contours,cvScalar(255,255,0),cvScalar(255,0,255),100);
+		cvDrawContours(img_gray,contours,cvScalarAll(255),cvScalarAll(255),100);
 		cvShowImage("Contours",img_gray);
 	}
 }
 int main(int argc, char * argv[]){
-
-	img=cvLoadImage("E://Linhehe//CVLab//img//6.jpg");
+	CvCapture * capture=cvxCreateCameraCaptureAuto();
+	//img=cvLoadImage("E://Linhehe//CVLab//img//6.jpg");
+	img=cvQueryFrame(capture);
 	img_gray=cvxCreateImageSimilar(img,1);
 	cvNamedWindow("Contours",CV_WINDOW_NORMAL);
 	cvCreateTrackbar("Threshold","Contours",&g_thresh,255,on_trackbar);
 	on_trackbar(0);
-	cvWaitKey(0);
+	while(1){
+		img=cvQueryFrame(capture);
+		on_trackbar(0);
+		cvWaitKey(2);
+	}
 	return 0;
 
 }
