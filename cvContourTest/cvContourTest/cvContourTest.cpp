@@ -17,7 +17,7 @@ void on_trackbar(int){
 	//可调节的阈值法
 	//cvThreshold(img_gray,img_gray,g_thresh,255,CV_THRESH_BINARY);
 	//自适应阈值法
-	//AdaptiveThreshold(img_gray,img_gray,255);
+	//cvAdaptiveThreshold(img_gray,img_gray,255);
 	//Canny边缘检测
 	cvCanny(img_gray,img_gray,50,g_thresh);
 
