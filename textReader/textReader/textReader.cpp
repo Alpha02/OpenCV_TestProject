@@ -10,42 +10,129 @@ CvSeq * cvxFindContourFromImage(IplImage * src_img,CvMemStorage * storage,double
 	cvErode(src_gray,src_gray,0,1);
 	cvDilate(src_gray,src_gray,0,1);
 	cvThreshold(src_gray,src_gray,threshold,255,CV_THRESH_BINARY);
-	cvNamedWindow("img_temp");
-	cvShowImage("img_temp",src_gray);
-	cvWaitKey(0);
-
-	if(storage==NULL)storage=cvCreateMemStorage();
 	CvSeq *contours;
 	cvFindContours(src_gray,storage,&(contours),88,CV_RETR_TREE);
 	cvReleaseImage(&src_gray);
 	return contours;
 }
-//This function cut the first Seq ,and keep its v_next pointer;
-CvSeq * cvxGetSubSeq(CvSeq * src_seq)
-{
-	CvSlice new_slice=cvSlice(0,88+src_seq->total*src_seq->elem_size);
-	CvSeq * newSeq=cvSeqSlice(src_seq,new_slice,src_seq->storage,1);
+struct CvxCharacter{
+	IplImage imgdata;
+	char character_name[3];
+};
+CvxCharacter cvxCharacter(IplImage &imgdata,char *character_name){
+	CvxCharacter character;
+	character.imgdata=imgdata;
+	character.character_name[0]=character_name[0];
+	character.character_name[1]=character_name[1];
+	character.character_name[2]=character_name[2];
+	return character;
+}
+void matchCharacter(IplImage * src_img,CvSeq * contours){
+
+}
+int getFileStorageIdx(){
+	CvFileStorage * file=cvOpenFileStorage("./ch_data/rec_manager.xml",0,CV_STORAGE_READ);
+	int idx=cvReadIntByName(file,0,"n");
+	cvReleaseFileStorage(&file);
+	return idx;
+}
+void setFileStorageIdx(int idx){
+	CvFileStorage * file=cvOpenFileStorage("./ch_data/rec_manager.xml",0,CV_STORAGE_WRITE);
+	cvWriteInt(file,"n",idx);
+	cvReleaseFileStorage(&file);
+}
+CvxCharacter getCharacterFromFile(int idx){
+	char node_name[40];
+	sprintf(node_name,"./ch_data/ch%d.xml",idx);
 	
-	if(src_seq->v_next!=NULL){
-		newSeq->v_next=src_seq->v_next;
+	CvFileStorage * file=cvOpenFileStorage(node_name,0,CV_STORAGE_READ);
+	CvxCharacter ch;
+	IplImage *temp_img=(IplImage*)cvReadByName(file,0,"img");
+	char *ch_name=(char*)cvReadStringByName(file,0,"name");
+	ch=cvxCharacter(*temp_img,ch_name);
+	cvReleaseFileStorage(&file);
+	return ch;
+}
+void WriteCharacterToFile(CvxCharacter & ch,int idx){
+	char node_name[40];
+	sprintf(node_name,"./ch_data/ch%d.xml",idx);
+	CvFileStorage * file=cvOpenFileStorage(node_name,0,CV_STORAGE_WRITE);
+	cvWriteString(file,"name",ch.character_name);
+	cvWrite(file,"img",&(ch.imgdata));
+
+	cvReleaseFileStorage(&file);
+}
+double SearchCharacter(CvxCharacter & ch){
+	int idx=getFileStorageIdx();
+	int idx_best=0;
+	double m_best=1;
+	char name_best[3];
+	while(idx--){
+
+		CvxCharacter ch_temp=getCharacterFromFile(idx);
+		IplImage * img_gray=cvxCreateImageSimilar(&ch.imgdata,1);
+		IplImage * img_temp_gray=cvxCreateImageSimilar(&ch_temp.imgdata,1);
+		cvCvtColor(&ch_temp.imgdata,img_temp_gray,CV_BGR2GRAY);
+		cvCvtColor(&ch.imgdata,img_gray,CV_BGR2GRAY);
+		double m=cvMatchShapes(img_gray,img_temp_gray,CV_CONTOURS_MATCH_I1);
+		if(m<m_best){
+			m_best=m;
+			strcpy(name_best,ch_temp.character_name);
+			idx_best=idx;
+		}
+
 	}
+	if(m_best<0.0001){
+		cout<<"match:  "<<name_best<<" : "<<m_best<<"\n";
+	}
+	return m_best;
+
+}
+void cvxAskQuestion(IplImage * src_img,CvSeq * contours){
+	CvRect rect=cvBoundingRect(contours);
+	IplImage * text_img=cvCreateImage(cvSize(rect.width,rect.height),8,3);
+	text_img=cvxGetSubImage(src_img,rect);
+	cvNamedWindow("text",CV_WINDOW_NORMAL);
+	cvResizeWindow("text",rect.width*5,rect.height*5);
+	cvShowImage("text",text_img);
+	cvWaitKey(3);
+	char answer[3]="  ";
+	CvxCharacter ch=cvxCharacter(*text_img,answer);
+	if(SearchCharacter(ch)==0){
+			cvWaitKey(1000);
+	}else{
 	
-	return newSeq;
+		std::cout<<"What's this text?:";
+		std::cin>>answer;
+		ch=cvxCharacter(*text_img,answer);
+		int idx=getFileStorageIdx();
+		if(ch.character_name[0]!='?'){
+			WriteCharacterToFile(ch,idx);
+			setFileStorageIdx(idx+1);
+		}
+	}
+	cvDestroyWindow("text");
 }
 void cvxBoundingContours(IplImage * src_img,CvSeq * src_contours,CvScalar color=cvScalar(rand()%255,rand()%255,rand()%255)){
 	if(src_contours->h_next)cvxBoundingContours(src_img,src_contours->h_next);
 	if(src_contours->v_next)cvxBoundingContours(src_img,src_contours->v_next,color);
 	CvRect rect=cvBoundingRect(src_contours);
 	if((rect.height>15 || rect.width>15)){
-		cvRectangle(src_img,cvPoint(rect.x,rect.y),cvPoint(rect.x+rect.width,rect.y+rect.height),color,1);
+
+		//cvRectangle(src_img,cvPoint(rect.x,rect.y),cvPoint(rect.x+rect.width,rect.y+rect.height),color,1);
+		cvxAskQuestion(src_img,src_contours);
 	}
 }
+
 int main(){
 	IplImage * src_img=cvLoadImage("E://Linhehe//CVLab//img//text3.png");
+	IplImage * src_gray=cvxCreateImageSimilar(src_img,1);
+	cvCvtColor(src_img,src_gray,CV_BGR2GRAY);
+	cv
 	IplImage * erode_img=cvxCreateImageSimilar(src_img);
 	IplImage * contour_draw=cvxCreateImageSimilar(src_img);
 	CvMemStorage *storage=cvCreateMemStorage();
-	CvSeq *contours=cvxFindContourFromImage(src_img,storage,230);
+	CvSeq *contours=cvxFindContourFromImage(src_img,storage,240);
 	cvxBoundingContours(src_img,contours);
 	cvxShow(src_img);
 	cvWaitKey(0);
