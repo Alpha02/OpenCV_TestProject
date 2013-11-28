@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<name>"£¿"</name>
+<img type_id="opencv-sequence">
+  <flags>"closed hole curve"</flags>
+  <count>31</count>
+  <dt>"2i"</dt>
+  <rect><x>-872366173</x>
+    <y>-858993460</y>
+    <width>-858993460</width>
+    <height>-872366173</height></rect>
+  <color>-858993460</color>
+  <data>
+    564 5 565 4 567 6 567 10 569 10 570 11 569 12 567 12 567 14 568 14
+    570 16 570 17 569 18 567 16 567 26 566 27 565 27 564 26 564 18 564
+    19 563 20 562 19 562 17 563 16 563 14 564 13 564 12 561 12 560 11
+    561 10 564 10</data></img>
+</opencv_storage>

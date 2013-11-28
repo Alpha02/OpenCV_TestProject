@@ -62,22 +62,44 @@ double cvxMatchShapesNotRotate(CvSeq * seq1,CvSeq * seq2){
 	CvMoments m1,m2;
 	cvMoments(seq1,&m1);
 	cvMoments(seq2,&m2);
-	double mu20_1=cvGetNormalizedCentralMoment(&m1,2,0);
-	double mu11_1=cvGetNormalizedCentralMoment(&m1,1,1);
-	double mu02_1=cvGetNormalizedCentralMoment(&m1,0,2);
-	double mu30_1=cvGetNormalizedCentralMoment(&m1,3,0);
-	double mu21_1=cvGetNormalizedCentralMoment(&m1,2,1);
-	double mu12_1=cvGetNormalizedCentralMoment(&m1,1,2);
-	double mu03_1=cvGetNormalizedCentralMoment(&m1,0,3);
+	double mu1[7],mu2[7];
+	
+	mu1[0]=cvGetNormalizedCentralMoment(&m1,2,0);
+	mu1[1]=cvGetNormalizedCentralMoment(&m1,1,1);
+	mu1[2]=cvGetNormalizedCentralMoment(&m1,0,2);
+	mu1[3]=cvGetNormalizedCentralMoment(&m1,3,0);
+	mu1[4]=cvGetNormalizedCentralMoment(&m1,2,1);
+	mu1[5]=cvGetNormalizedCentralMoment(&m1,1,2);
+	mu1[6]=cvGetNormalizedCentralMoment(&m1,0,3);
 
-	double mu20_2=cvGetNormalizedCentralMoment(&m2,2,0);
-	double mu11_2=cvGetNormalizedCentralMoment(&m2,1,1);
-	double mu02_2=cvGetNormalizedCentralMoment(&m2,0,2);
-	double mu30_2=cvGetNormalizedCentralMoment(&m2,3,0);
-	double mu21_2=cvGetNormalizedCentralMoment(&m2,2,1);
-	double mu12_2=cvGetNormalizedCentralMoment(&m2,1,2);
-	double mu03_2=cvGetNormalizedCentralMoment(&m2,0,3);
-	return 100;
+	mu2[0]=cvGetNormalizedCentralMoment(&m2,2,0);
+	mu2[1]=cvGetNormalizedCentralMoment(&m2,1,1);
+	mu2[2]=cvGetNormalizedCentralMoment(&m2,0,2);
+	mu2[3]=cvGetNormalizedCentralMoment(&m2,3,0);
+	mu2[4]=cvGetNormalizedCentralMoment(&m2,2,1);
+	mu2[5]=cvGetNormalizedCentralMoment(&m2,1,2);
+	mu2[6]=cvGetNormalizedCentralMoment(&m2,0,3);
+	
+	int i;
+	double res=0;
+	for(i=0;i<7;i++){
+		res+=pow(mu1[i]-mu2[i],2);
+	}
+	/*
+	mu1[0]=cvGetNormalizedCentralMoment(&m1,1,1);
+	mu1[1]=cvGetNormalizedCentralMoment(&m1,2,1);
+	mu1[2]=cvGetNormalizedCentralMoment(&m1,1,2);
+
+	mu2[0]=cvGetNormalizedCentralMoment(&m2,1,1);
+	mu2[1]=cvGetNormalizedCentralMoment(&m2,2,1);
+	mu2[2]=cvGetNormalizedCentralMoment(&m2,1,2);
+	int i;
+	double res=0;
+	for(i=0;i<3;i++){
+		res+=pow(mu1[i]-mu2[i],2);
+	}
+	*/
+	return res;
 
 }
 void WriteCharacterToFile(CvxCharacter & ch,int idx){
@@ -103,12 +125,8 @@ double SearchCharacter(CvxCharacter & ch){
 		}
 
 	}
-	if(m_best<0.0001){
-		cout<<"MATCH:  "<<name_best<<" : "<<m_best<<"\n";
-	}else{
-		cout<<"maybe:  "<<name_best<<" : "<<m_best<<"\n";
 
-	}
+	cout<<name_best;
 	return m_best;
 
 }
@@ -119,15 +137,16 @@ void cvxAskQuestion(IplImage * src_img,CvSeq * contours){
 	text_img=cvxGetSubImage(src_img,rect);
 	cvNamedWindow("text",CV_WINDOW_NORMAL);
 	cvResizeWindow("text",rect.width*5,rect.height*5);
-	cvDrawContours(text_img,contours,cvScalar(0,255,0),cvScalar(0,0,255),255,2,8,cvPoint(-rect.x,-rect.y));
+	cvDrawContours(text_img,contours,cvScalar(0,255,0),cvScalar(0,0,255),255,1,8,cvPoint(-rect.x,-rect.y));
 	cvShowImage("text",text_img);
 	cvWaitKey(3);
 	char answer[3]="  ";
 	CvxCharacter ch=cvxCharacter(*contours,answer);
-	if(SearchCharacter(ch)==0){
-			cvWaitKey(1000);
+	if(SearchCharacter(ch)<0.000001){
+			cvWaitKey(1);
 	}else{
-	
+
+		if(1){
 		std::cout<<"What's this text?:";
 		std::cin>>answer;
 		ch=cvxCharacter(*contours,answer);
@@ -135,6 +154,8 @@ void cvxAskQuestion(IplImage * src_img,CvSeq * contours){
 		if(ch.character_name[0]!='?'){
 			WriteCharacterToFile(ch,idx);
 			setFileStorageIdx(idx+1);
+		}
+
 		}
 	}
 	cvDestroyWindow("text");
@@ -151,12 +172,13 @@ void cvxBoundingContours(IplImage * src_img,CvSeq * src_contours,CvScalar color=
 }
 
 int main(){
-	IplImage * src_img=cvLoadImage("E://Linhehe//CVLab//img//text4_rotate.png");
+	IplImage * src_img=cvLoadImage("E://Linhehe//CVLab//img//text2.png");
 	IplImage * src_gray=cvxCreateImageSimilar(src_img,1);
 	cvCvtColor(src_img,src_gray,CV_BGR2GRAY);
 	IplImage * erode_img=cvxCreateImageSimilar(src_img);
 	IplImage * contour_draw=cvxCreateImageSimilar(src_img);
 	CvSeq *contours=cvxFindContourFromImage(src_img,Mem_seq,200);
+
 	cvxBoundingContours(src_img,contours);
 	cvxShow(src_img);
 	cvWaitKey(0);

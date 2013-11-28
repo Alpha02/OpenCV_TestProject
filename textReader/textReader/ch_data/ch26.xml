@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<name>"."</name>
+<img type_id="opencv-sequence">
+  <flags>"closed curve"</flags>
+  <count>17</count>
+  <dt>"2i"</dt>
+  <rect><x>-872415186</x>
+    <y>-858993460</y>
+    <width>-858993460</width>
+    <height>-872415186</height></rect>
+  <color>-858993460</color>
+  <data>
+    165 152 164 153 163 153 163 154 162 155 162 167 163 168 163 169 164
+    170 166 170 168 168 168 165 169 164 169 158 168 157 168 154 166 152</data></img>
+</opencv_storage>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<name>D</name>
+<img type_id="opencv-sequence">
+  <flags>"closed hole curve"</flags>
+  <count>16</count>
+  <dt>"2i"</dt>
+  <rect><x>-872415164</x>
+    <y>-858993460</y>
+    <width>-858993460</width>
+    <height>-872415164</height></rect>
+  <color>-858993460</color>
+  <data>
+    121 80 122 79 131 79 132 80 133 80 136 83 136 84 137 85 137 97 136
+    98 136 99 133 102 132 102 131 103 122 103 121 102</data></img>
+</opencv_storage>

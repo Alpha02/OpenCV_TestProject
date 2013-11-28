@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<name>"ец"</name>
+<img type_id="opencv-sequence">
+  <flags>"closed hole curve"</flags>
+  <count>35</count>
+  <dt>"2i"</dt>
+  <rect><x>-872356139</x>
+    <y>-858993460</y>
+    <width>-858993460</width>
+    <height>-872356139</height></rect>
+  <color>-858993460</color>
+  <data>
+    42 5 43 4 45 6 45 7 50 7 51 6 52 6 54 8 53 9 44 9 44 10 49 10 50 11
+    50 21 51 21 52 22 51 23 49 23 47 21 47 20 40 20 40 21 38 23 33 23 32
+    22 33 21 37 21 37 11 38 10 42 10 42 9 35 9 34 8 35 7 42 7</data></img>
+</opencv_storage>
