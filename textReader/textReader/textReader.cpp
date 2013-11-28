@@ -7,8 +7,9 @@ CvSeq * cvxFindContourFromImage(IplImage * src_img,CvMemStorage * storage,double
 	IplImage * src_gray=cvxCreateImageSimilar(src_img,1);
 	cvCvtColor(src_img,src_gray,CV_BGR2GRAY);
 	//cvAdaptiveThreshold(src_gray,src_gray,255);
-	cvErode(src_gray,src_gray,0,1);
-	cvDilate(src_gray,src_gray,0,1);
+	//cvDilate(src_gray,src_gray,0,1);
+	//cvErode(src_gray,src_gray,0,1);
+
 	cvThreshold(src_gray,src_gray,threshold,255,CV_THRESH_BINARY);
 	CvSeq *contours;
 	cvFindContours(src_gray,storage,&(contours),88,CV_RETR_TREE);
@@ -70,11 +71,7 @@ double SearchCharacter(CvxCharacter & ch){
 	while(idx--){
 
 		CvxCharacter ch_temp=getCharacterFromFile(idx);
-		IplImage * img_gray=cvxCreateImageSimilar(&ch.imgdata,1);
-		IplImage * img_temp_gray=cvxCreateImageSimilar(&ch_temp.imgdata,1);
-		cvCvtColor(&ch_temp.imgdata,img_temp_gray,CV_BGR2GRAY);
-		cvCvtColor(&ch.imgdata,img_gray,CV_BGR2GRAY);
-		double m=cvMatchShapes(img_gray,img_temp_gray,CV_CONTOURS_MATCH_I1);
+		double m=cvMatchShapes(&(ch_temp.imgdata),&(ch.imgdata),CV_CONTOURS_MATCH_I1);
 		if(m<m_best){
 			m_best=m;
 			strcpy(name_best,ch_temp.character_name);
@@ -84,6 +81,9 @@ double SearchCharacter(CvxCharacter & ch){
 	}
 	if(m_best<0.0001){
 		cout<<"match:  "<<name_best<<" : "<<m_best<<"\n";
+	}else{
+		cout<<"maybe:  "<<name_best<<" : "<<m_best<<"\n";
+
 	}
 	return m_best;
 
@@ -91,20 +91,25 @@ double SearchCharacter(CvxCharacter & ch){
 void cvxAskQuestion(IplImage * src_img,CvSeq * contours){
 	CvRect rect=cvBoundingRect(contours);
 	IplImage * text_img=cvCreateImage(cvSize(rect.width,rect.height),8,3);
+	IplImage * text_gray=cvCreateImage(cvSize(rect.width,rect.height),8,1);
+
+
 	text_img=cvxGetSubImage(src_img,rect);
+	cvCvtColor(text_img,text_gray,CV_BGR2GRAY);
+	cvThreshold(text_gray,text_gray,240,255,CV_THRESH_BINARY_INV);
 	cvNamedWindow("text",CV_WINDOW_NORMAL);
 	cvResizeWindow("text",rect.width*5,rect.height*5);
-	cvShowImage("text",text_img);
+	cvShowImage("text",text_gray);
 	cvWaitKey(3);
 	char answer[3]="  ";
-	CvxCharacter ch=cvxCharacter(*text_img,answer);
+	CvxCharacter ch=cvxCharacter(*text_gray,answer);
 	if(SearchCharacter(ch)==0){
 			cvWaitKey(1000);
 	}else{
 	
 		std::cout<<"What's this text?:";
 		std::cin>>answer;
-		ch=cvxCharacter(*text_img,answer);
+		ch=cvxCharacter(*text_gray,answer);
 		int idx=getFileStorageIdx();
 		if(ch.character_name[0]!='?'){
 			WriteCharacterToFile(ch,idx);
@@ -125,14 +130,13 @@ void cvxBoundingContours(IplImage * src_img,CvSeq * src_contours,CvScalar color=
 }
 
 int main(){
-	IplImage * src_img=cvLoadImage("E://Linhehe//CVLab//img//text3.png");
+	IplImage * src_img=cvLoadImage("E://Linhehe//CVLab//img//text4.png");
 	IplImage * src_gray=cvxCreateImageSimilar(src_img,1);
 	cvCvtColor(src_img,src_gray,CV_BGR2GRAY);
-	cv
 	IplImage * erode_img=cvxCreateImageSimilar(src_img);
 	IplImage * contour_draw=cvxCreateImageSimilar(src_img);
 	CvMemStorage *storage=cvCreateMemStorage();
-	CvSeq *contours=cvxFindContourFromImage(src_img,storage,240);
+	CvSeq *contours=cvxFindContourFromImage(src_img,storage,200);
 	cvxBoundingContours(src_img,contours);
 	cvxShow(src_img);
 	cvWaitKey(0);
